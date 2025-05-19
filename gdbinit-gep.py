@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import atexit
+import errno
 import os
 import re
 import shutil
@@ -628,6 +629,8 @@ def gep_prompt(current_prompt: str) -> None:
         except EOFError:
             gdb.execute("quit")
         except Exception as e:
+            if isinstance(e, IOError) and e.errno == errno.EIO:
+                return
             print(e)
             traceback.print_tb(e.__traceback__)
 
